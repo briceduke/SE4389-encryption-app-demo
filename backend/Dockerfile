@@ -16,8 +16,9 @@ EXPOSE 5001
 
 ENV FLASK_APP=app.py \
     FLASK_RUN_HOST=0.0.0.0 \
-    FLASK_RUN_PORT=5001
+    FLASK_RUN_PORT=5001 \
+    PYTHONUNBUFFERED=1
 
-CMD ["flask", "run", "--debug"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5001", "--workers", "2", "--timeout", "120", "app:app"]
 
 

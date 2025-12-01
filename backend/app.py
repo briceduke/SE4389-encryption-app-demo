@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, jsonify
 from dotenv import load_dotenv
 from controllers.user_controller import user_bp
 from controllers.credentials_controller import credentials_bp
@@ -15,9 +15,14 @@ app.config['storage'] = JsonStorage()
 app.config['session_store'] = FileSessionStore()
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 32
 
-# Initialize CORS
-CORS(app)
+# Initialize CORS with specific origins
+CORS(app, origins=["*"])
 
+
+@app.route('/', methods=['GET'])
+def health_check():
+    """Health check endpoint for Fly.io"""
+    return jsonify({"status": "ok", "service": "encryption-app-backend"}), 200
 
 @app.after_request
 def set_security_headers(resp):
