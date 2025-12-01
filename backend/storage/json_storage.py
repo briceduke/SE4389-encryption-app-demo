@@ -22,10 +22,16 @@ class JsonStorage(AbstractStorage):
             json.dump(self._data, f, indent=2)
 
     def save_user(self, user: User) -> None:
+        # Reload data before saving to minimize race conditions
+        # This ensures we're working with the latest data
+        self._data = self._load()
         self._data[user.username] = user.to_dict()
         self._save()
 
     def get_user(self, username: str) -> Optional[User]:
+        # Reload data from disk to ensure we have the latest data
+        # This prevents stale data issues in production with concurrent requests
+        self._data = self._load()
         d = self._data.get(username)
         return User.from_dict(d) if d else None
 

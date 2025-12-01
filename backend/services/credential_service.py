@@ -23,6 +23,9 @@ def add_credential(storage: AbstractStorage, username: str, root_key: bytes, sit
 
 def check_credential_dup(storage, username, root_key, site_password):
     user = storage.get_user(username)
+    if not user:
+        raise ValueError("User not found")
+    
     warning = False
     count = 0
 
